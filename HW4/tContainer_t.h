@@ -1,17 +1,24 @@
 #ifndef TContainer_t_H_ 
 #define TContainer_t_H_
 
-#using namespace std;
+#include <vector>
+#include <list>
+#include <deque>
+
+using namespace std;
 
 //Template class which wraps any sequential STL container (vector, List, deque)
-template <class T, class Container>
+template <class T, class C>
 class tContainer_t{
+
+typedef typename C::iterator iter_t;
+
 public:
 	
 	//CTOR & DTOR
 	tContainer_t();													//default CTOR
 	tContainer_t(tContainer_t& tC);									//Copy CTOR
-	~tContainer_t()													//DTOR
+	~tContainer_t();													//DTOR
 
 	//Operator Implementations
 	tContainer_t& operator=(const tContainer_t& tC);				//Assignment Operator
@@ -38,3 +45,5 @@ private:
 	//Private Member
 	//TODO: add private members
 };
+
+#endif
