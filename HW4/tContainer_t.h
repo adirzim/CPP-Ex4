@@ -21,12 +21,15 @@ public:
 	
 	//CTOR & DTOR
 	tContainer_t();													//default CTOR
-	tContainer_t(tContainer_t& tC);									//Copy CTOR
+	tContainer_t(tContainer_t<T,C>& tC);									//Copy CTOR
 	~tContainer_t();												//DTOR
 
 	//Operator Implementations
-	tContainer_t& operator=(const tContainer_t& tC);				//Assignment Operator
-	T& operator[](int index)const;									//[] operator
+	tContainer_t<T,C>& operator=(const tContainer_t<T,C>& tC);				//Assignment Operator
+	
+    //TODO: Assign & Get operator!
+    T& operator[](int index)const;									//[] operator
+    
 	void operator+=(tContainer_t& tC);								//merge of 2 containers: arr1 += arr2, after the merge  
 																	//arr1 will contain arr1 & arr2 content and arr2 will be empty
 	//Public Methods
@@ -64,7 +67,7 @@ tContainer_t<T, C>::tContainer_t()
 }
 
 template <class T, class C>
-tContainer_t<T, C>::tContainer_t( tContainer_t& tC )
+tContainer_t<T, C>::tContainer_t( tContainer_t<T,C>& tC )
 {
 	//TODO: implement
 }
@@ -80,7 +83,7 @@ tContainer_t<T, C>::~tContainer_t()
  *****************************/
 
 template <class T, class C>
-tContainer_t& tContainer_t<T, C>::operator=( const tContainer_t& tC )
+tContainer_t<T,C>& tContainer_t<T, C>::operator=( const tContainer_t<T,C>& tC )
 {
 	//TODO: implement
 	return NULL;
@@ -90,14 +93,15 @@ template <class T, class C>
 T& tContainer_t<T, C>::operator[]( int index ) const
 {
 	//TODO: implement
-	return NULL;
+    T t; //TODO: Remove this!
+	return t;
 }
 
 template <class T, class C>
 void tContainer_t<T, C>::operator+=( tContainer_t& tC )
 {
 	//TODO: implement
-	return NULL;
+	
 }
 
 /*********************************
