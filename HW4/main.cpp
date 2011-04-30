@@ -6,94 +6,135 @@
 
 using namespace std;
 
+//TODO: use #define to choose different types of containers
+
 //Members
-//bool first = true;				//set to true at first run
-int i,j,k,l,m,n;				//indexes
-//int containerType;				//describe the type chosen by the user
-
-
-//TODO: how to choose and access different types of containers
-
-tContainer_t<string, vector<string*>> vecStringCont1;
-tContainer_t<string, vector<string*>> vecStringCont2;
-//tContainer_t<double, vector<double*>> vecDoubleCont1;
-//tContainer_t<double, vector<double*>> vecDoubleCont2;
-//tContainer_t<string, list<string*>> listStringCont1;
-//tContainer_t<string, list<string*>> listStringCont2;
-//tContainer_t<double, list<double*>> listDoubleCont1;
-//tContainer_t<double, list<double*>> listDoubleCont2;
-//tContainer_t<string, deque<string*>> dequeStringCont1;
-//tContainer_t<string, deque<string*>> dequeStringCont2;
-//tContainer_t<double, deque<double*>> dequeDoubleCont1;
-//tContainer_t<double, deque<double*>> dequeDoubleCont2;
+int i, value, continerNumber, index, result;
+tContainer_t <int, vector<int*>> container1 ,container2;
 
 //Methods
-//void ChooseContainers();									//choose the type of the containers
-//tContainer_t* GetContainer(int number);						//get the requested container
+void GetContainerNumber();
+tContainer_t<int, vector<int*>>& GetContainer();
+
 
 //Main
 int main(int argc,int **argv){
 
 	while (1)
 	{
-//		if (first)
-//		{
-//			ChooseContainers();
-//			first = false;
-//		}
+		cout << "Choose action:" << endl
+			<< "*************" << endl
+			<< "1- is Empty?			2 - number of elements" << endl
+			<< "3- insert at the end	4 - return 1st" <<endl
+			<< "5- return last			6 - find by value" <<endl
+			<< "7- remove by value		8 - remove all" <<endl
+			<< "9- insert using []		10 - get using []" <<endl
+			<< "11- merge container		12 - exit" <<endl;
+		cin >> i;
+		cout << endl;
 
+		switch (i)
+		{
+		case 1:
+			cout << "container 1 is " << (container1.IsEmpty()?"empty":"not empty") << endl
+				 << "container 2 is " << (container2.IsEmpty()?"empty":"not empty") << endl
+				 <<endl;
+			break;
+		case 2:
+			cout << "container 1 has " << container1.NumberOfElements() << " elements" <<endl
+				<< "container 2 has " << container2.NumberOfElements() << " elements" <<endl
+				<<endl;
+			break;
+		case 3:
+			GetContainerNumber();
+			cout << "enter value: " << endl;
+			cin >> value;
+			GetContainer().Insert(value);
+			break;
+		case 4:
+			GetContainerNumber();
+			cout << "1st element is : " << GetContainer().GetFirstElement() << endl;
+			break;
+		case 5:
+			GetContainerNumber();
+			cout << "Last element is : " << GetContainer().GetLastElement() << endl;
+			break;
+		case 6:
+			GetContainerNumber();
+			cout << "enter value to find: " << endl;
+			cin >> value;
+			result = *(GetContainer().FindElement(value));
+			if (result == value)
+			{
+				cout << "Element found" << endl;
+			} 
+			else if(result == 0)
+			{
+				cout << "Element not found" << endl;
+			}else{
+				cout << "unclear result" << endl;
+			}
+			break;
+		case 7:
+			GetContainerNumber();
+			cout << "enter value to remove: " << endl;
+			cin >> value;
+			result = *(GetContainer().RemoveElement(value));
+			if (result == value)
+			{
+				cout << "Element removed" << endl;
+			} 
+			else if(result == 0)
+			{
+				cout << "Element didn't found" << endl;
+			}else{
+				cout << "unclear result" << endl;
+			}
+			break;
+		case 8:
+			GetContainerNumber();
+			GetContainer().RemoveAll();
+			break;
+		case 9:
+			GetContainerNumber();
+			cout << "enter index: " << endl;
+			cin >> index;
+			cout << "enter value: " << endl;
+			cin >> value;
+			GetContainer()[index] = value;
+			break;
+		case 10:
+			GetContainerNumber();
+			cout << "enter index: " << endl;
+			cin >> index;
+			cout << "index " << index << " have the value: " << GetContainer()[index] << endl;
+			break;
+		case 11:
+			container1 += container2;
+			cout << "container merged" << endl;
+			break;
+		case 12:
+			exit(1);
+			break;
+		}
 	}
-
 	return 1;
 }
 
 //Method Implementations
 
+void GetContainerNumber(){
+	cout << "choose container (1/2): " <<endl;
+	cin >> continerNumber;
+}
 
-//void ChooseContainers()
-//{
-//	cout << "Choose type:" << endl
-//		<< "***********" << endl
-//		<< "1 - string			2 - double" << endl
-//	cin >> i;
-//	cout << endl;
-//
-//	cout << "Choose container:" << endl
-//		<< "*****************" << endl
-//		<< "1 - Vector			2 - List" << endl
-//		<< "3 - deque" << endl;
-//		cin >> j;
-//	cout << endl;
-//
-//	containerType = (i*100+j*10);
-//}
+tContainer_t<int, vector<int*>>& GetContainer()
+{
+	if (continerNumber == 2)
+	{
+		return container2;
+	}else{
+		return container1;
+	}
+}
 
-//tContainer_t GetContainer(int number){
-//
-//	switch(containerType+number){
-//		case 111:
-//			return vecStringCont1;
-//		case 112:
-//			return vecStringCont2;
-//		case 121:
-//			return listStringCont1;
-//		case 122:
-//			return listStringCont2;
-//		case 131:
-//			return dequeStringCont1;
-//		case 132:
-//			return dequeStringCont1;
-//		case 211:
-//			return vecDoubleCont1;
-//		case 212:
-//			return vecDoubleCont2;
-//		case 221:
-//			return listDoubleCont1;
-//		case 222:
-//			return listDoubleCont2;
-//		case 231:
-//			return dequeDoubleCont1;
-//		case 232:
-//			return dequeDoubleCont2;
-//	}
-//}
