@@ -9,13 +9,15 @@ using namespace std;
 //TODO: use #define to choose different types of containers
 
 //Members
-int i, value, continerNumber, index, result;
+int i, value, continerNumber, index, last;
+int* result;
 tContainer_t <int, vector<int*>> container1 ,container2;
+int* values = new int[10];
 
 //Methods
 void GetContainerNumber();
 tContainer_t<int, vector<int*>>& GetContainer();
-
+int* GetValueAddress(int val);
 
 //Main
 int main(int argc,int **argv){
@@ -25,7 +27,7 @@ int main(int argc,int **argv){
 		cout << "Choose action:" << endl
 			<< "*************" << endl
 			<< "1- is Empty?			2 - number of elements" << endl
-			<< "3- insert at the end	4 - return 1st" <<endl
+			<< "3- insert at the end		4 - return 1st" <<endl
 			<< "5- return last			6 - find by value" <<endl
 			<< "7- remove by value		8 - remove all" <<endl
 			<< "9- insert using []		10 - get using []" <<endl
@@ -48,8 +50,9 @@ int main(int argc,int **argv){
 		case 3:
 			GetContainerNumber();
 			cout << "enter value: " << endl;
-			cin >> value;
-			GetContainer().Insert(value);
+			cin >> values[last];
+			GetContainer().Insert(&values[last]);
+			last++;
 			break;
 		case 4:
 			GetContainerNumber();
@@ -63,14 +66,11 @@ int main(int argc,int **argv){
 			GetContainerNumber();
 			cout << "enter value to find: " << endl;
 			cin >> value;
-			result = *(GetContainer().FindElement(value));
-			if (result == value)
-			{
-				cout << "Element found" << endl;
-			} 
-			else if(result == 0)
-			{
+			result = GetContainer().FindElement(GetValueAddress(value));
+			if(result == 0){
 				cout << "Element not found" << endl;
+			}else if (*result == value){
+				cout << "Element found" << endl;
 			}else{
 				cout << "unclear result" << endl;
 			}
@@ -79,14 +79,11 @@ int main(int argc,int **argv){
 			GetContainerNumber();
 			cout << "enter value to remove: " << endl;
 			cin >> value;
-			result = *(GetContainer().RemoveElement(value));
-			if (result == value)
-			{
-				cout << "Element removed" << endl;
-			} 
-			else if(result == 0)
-			{
+			result = GetContainer().RemoveElement(GetValueAddress(value));
+			if(result == 0){
 				cout << "Element didn't found" << endl;
+			}else if (*result == value){
+				cout << "Element removed" << endl;
 			}else{
 				cout << "unclear result" << endl;
 			}
@@ -101,7 +98,7 @@ int main(int argc,int **argv){
 			cin >> index;
 			cout << "enter value: " << endl;
 			cin >> value;
-			GetContainer()[index] = value;
+//			GetContainer()[index] = &value;
 			break;
 		case 10:
 			GetContainerNumber();
@@ -114,6 +111,7 @@ int main(int argc,int **argv){
 			cout << "container merged" << endl;
 			break;
 		case 12:
+			delete[] values;
 			exit(1);
 			break;
 		}
@@ -136,5 +134,16 @@ tContainer_t<int, vector<int*>>& GetContainer()
 	}else{
 		return container1;
 	}
+}
+
+int* GetValueAddress(int val)
+{
+	for (int a = 0 ; a <= last ; a++)
+	{
+		if(values[a] == val){
+			return &values[a];
+		}
+	}
+	return 0;
 }
 
