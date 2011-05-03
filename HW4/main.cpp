@@ -9,7 +9,7 @@ using namespace std;
 
 typedef int T;
 
-typedef vector<T *> C;
+typedef deque<T *> C;
 
 //Members
 int i, continerNumber, index;
@@ -128,7 +128,12 @@ int main(int argc,int **argv){
 			cout << "enter value: " << endl;
             cin >> value;
 
-            *(GetContainer()[index]) = value;
+            if (index >= GetContainer().NumberOfElements()){
+                break;
+            }
+
+           *GetContainer()[index] = value;
+
             
 
 			break;

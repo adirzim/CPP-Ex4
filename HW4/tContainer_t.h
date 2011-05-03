@@ -46,8 +46,8 @@ public:
 	void Insert(T* element);											//insert  a new element in the end of the container
 	T* GetFirstElement() const;										//return the 1st element in the container
 	T* GetLastElement() const;										//return the last element in the container
-	T* FindElement(T& element);										//find specific element by value (in case of failure return 0)
-	T* RemoveElement(T& element);									//Remove the first element with the same value (in case of failure return 0)
+	T* FindElement(const T& element);										//find specific element by value (in case of failure return 0)
+	T* RemoveElement(const T& element);									//Remove the first element with the same value (in case of failure return 0)
 	void RemoveAll();												//remove all elements without deleting them
 
 /******************************
@@ -58,10 +58,10 @@ private:
 
 	//Private Member
 	C container;
-    iter_t it;
+    //iter_t it;
 
 	//private Methods
-	void findFirst( T& element );									//return iterator of the first equivalent element otherwise return container.end()
+	T* findFirst(const T& element );									//return iterator of the first equivalent element otherwise return container.end()
 
 };
 
@@ -76,7 +76,7 @@ class tContainer_equal_t{
 
 public:
 
-    explicit tContainer_equal_t<T>(T &obj): _obj (obj) { }
+    explicit tContainer_equal_t<T>(const T &obj): _obj (obj) { }
 
     bool operator()(const T* obj) const{
         return _obj == *obj;
@@ -125,37 +125,28 @@ tContainer_t<T,C>& tContainer_t<T, C>::operator=( const tContainer_t<T,C>& tC )
 template <class T, class C>
 T*& tContainer_t<T, C>::operator[]( unsigned index )
 {
-	//case container is list
-	//if (typeid(container)==typeid(list<T*>))
-	//{
-        
+    T** tNULL = NULL;
 
-        
+    //if index out of bounds return 0
+    if (index >= container.size()){
+        return *tNULL;
+    }
 
-        //return *it;
-
-        //return  getRefOfIndex((dynamic_cast) container, index);
-
-	//} 
-    
     iter_t it = container.begin();
     
     for (unsigned i = 0; i < index; i++, it++){}
     
     return *it;
-
-   
-    //return container[index];
-   
+          
 }
 
-
+ 
 
 template <class T, class C>
 void tContainer_t<T, C>::operator+=( tContainer_t<T,C>& tC )
 {
     
-    container.insert(container.begin(), tC.container.begin(), tC.container.end());
+    container.insert(container.end(), tC.container.begin(), tC.container.end());
 
     tC.container.clear();
 }
@@ -206,21 +197,21 @@ T* tContainer_t<T, C>::GetLastElement() const
 }
 
 template <class T, class C>
-T* tContainer_t<T, C>::FindElement( T& element )
+T* tContainer_t<T, C>::FindElement(const T& element )
 {
-	findFirst(element);	
+	return findFirst(element);	
 
-    if (it != container.end()){
+   /* if (it != container.end()){
         return *it;
-    }
+    }*/
 
-    return 0;
+    //return 0;
 }
 
 template <class T, class C>
-T* tContainer_t<T, C>::RemoveElement( T& element )
+T* tContainer_t<T, C>::RemoveElement(const T& element )
 {
-	findFirst(element);
+    iter_t it = find_if(container.begin(), container.end(), tContainer_equal_t<T>(element));
 
 	if (it != container.end())
 	{
@@ -245,10 +236,15 @@ void tContainer_t<T, C>::RemoveAll()
  **********************************/
 
 template <class T, class C>
-void tContainer_t<T, C>::findFirst( T& element )
+T* tContainer_t<T, C>::findFirst(const T& element )
 {
+    iter_t it = find_if(container.begin(), container.end(), tContainer_equal_t<T>( element ) );
 
-    it = find_if(container.begin(), container.end(), tContainer_equal_t<T>( element ) );
+    if (it == container.end()){
+        return 0;
+    }
+
+    return *it; 
     
 }
 
