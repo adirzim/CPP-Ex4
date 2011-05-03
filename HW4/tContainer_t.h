@@ -11,28 +11,10 @@
 using namespace std;
 
 
-//template <class T>
-//T*& getRefOfIndex(list<T *> &c, unsigned index){
-//     list<T *>::iterator it = c.begin();
-//
-//     for (unsigned i = 0; i < index; i++, it++){}
-//
-//     return *it;
-//}
-//
-//template <class T, class C>
-//T*& getRefOfIndex(C &c, unsigned index){
-//    return c[index];
-//}
-
-//Template class which wraps any sequential STL container (vector, List, deque)
 template <class T, class C>
 class tContainer_t{
 
 typedef typename C::iterator iter_t;
-
-
-
 
 
 /******************************
@@ -52,7 +34,7 @@ public:
     //TODO: Assign & Get operator!
     T*& operator[](unsigned index);									//[] operator
     
-	void operator+=(tContainer_t& tC);								//merge of 2 containers: arr1 += arr2, after the merge  
+	void operator+=(tContainer_t<T,C>& tC);								//merge of 2 containers: arr1 += arr2, after the merge  
 																	//arr1 will contain arr1 & arr2 content and arr2 will be empty
 
     template<class T, class C>
@@ -64,8 +46,8 @@ public:
 	void Insert(T* element);											//insert  a new element in the end of the container
 	T* GetFirstElement() const;										//return the 1st element in the container
 	T* GetLastElement() const;										//return the last element in the container
-	T* FindElement(T element);										//find specific element by value (in case of failure return 0)
-	T* RemoveElement(T element);									//Remove the first element with the same value (in case of failure return 0)
+	T* FindElement(T& element);										//find specific element by value (in case of failure return 0)
+	T* RemoveElement(T& element);									//Remove the first element with the same value (in case of failure return 0)
 	void RemoveAll();												//remove all elements without deleting them
 
 /******************************
@@ -79,8 +61,7 @@ private:
     iter_t it;
 
 	//private Methods
-	void findFirst( T element );									//return iterator of the first equivalent element otherwise return container.end()
-
+	void findFirst( T& element );									//return iterator of the first equivalent element otherwise return container.end()
 
 };
 
@@ -117,11 +98,8 @@ tContainer_t<T, C>::tContainer_t(){}
 template <class T, class C>
 tContainer_t<T, C>::tContainer_t( tContainer_t<T,C>& tC )
 {
-	int i;
-    
-    for (iter_type it = tC.container.begin(); it != tC.container.end(); it++){
-        Insert(tc[i]);
-    }
+	   
+    container.insert(container.begin(), tC.container.begin(), tC.container.end());    
 }
 
 template <class T, class C>
@@ -135,13 +113,9 @@ template <class T, class C>
 tContainer_t<T,C>& tContainer_t<T, C>::operator=( const tContainer_t<T,C>& tC )
 {
 	if(*this != tC){
-		//int i;
-		
+				
         this->RemoveAll();
-
-        for (iter_type it = tC.container.begin(); it != tC.container.end(); it++){
-            Insert(tc[i]);
-        }
+        container.insert(container.begin(), tC.container.begin(), tC.container.end());        
 
 	}
 	return *this;
@@ -152,34 +126,37 @@ template <class T, class C>
 T*& tContainer_t<T, C>::operator[]( unsigned index )
 {
 	//case container is list
-	if (typeid(container)==typeid(list<T*>))
-	{
-        //iter_t it = container.begin();
+	//if (typeid(container)==typeid(list<T*>))
+	//{
+        
 
-        //for (unsigned i = 0; i < index; i++, it++){}
+        
 
-        return *it;
+        //return *it;
 
         //return  getRefOfIndex((dynamic_cast) container, index);
 
-	} 
-
+	//} 
     
-    else
-    return container[index];
-   //return getRefOfIndex(cont, index);
+    iter_t it = container.begin();
+    
+    for (unsigned i = 0; i < index; i++, it++){}
+    
+    return *it;
+
+   
+    //return container[index];
+   
 }
 
 
 
 template <class T, class C>
-void tContainer_t<T, C>::operator+=( tContainer_t& tC )
+void tContainer_t<T, C>::operator+=( tContainer_t<T,C>& tC )
 {
+    
+    container.insert(container.begin(), tC.container.begin(), tC.container.end());
 
-    for (iter_t it = tC.container.begin(); it != tC.container.end(); it++){
-        Insert(*it);
-    }
-	
     tC.container.clear();
 }
 
@@ -229,7 +206,7 @@ T* tContainer_t<T, C>::GetLastElement() const
 }
 
 template <class T, class C>
-T* tContainer_t<T, C>::FindElement( T element )
+T* tContainer_t<T, C>::FindElement( T& element )
 {
 	findFirst(element);	
 
@@ -241,7 +218,7 @@ T* tContainer_t<T, C>::FindElement( T element )
 }
 
 template <class T, class C>
-T* tContainer_t<T, C>::RemoveElement( T element )
+T* tContainer_t<T, C>::RemoveElement( T& element )
 {
 	findFirst(element);
 
@@ -268,7 +245,7 @@ void tContainer_t<T, C>::RemoveAll()
  **********************************/
 
 template <class T, class C>
-void tContainer_t<T, C>::findFirst( T element )
+void tContainer_t<T, C>::findFirst( T& element )
 {
 
     it = find_if(container.begin(), container.end(), tContainer_equal_t<T>( element ) );
