@@ -1,3 +1,13 @@
+//
+//tContainer_t.h
+//
+// Assumption that were post in the virtual TAU forum:
+// ***************************************************
+// 1. the += operator only parameters will be container that wrap the same STL type and primitive type
+// 2. the user always provide the same type of T and T* in the tContainer_t decleration
+// 3. only the assign functionality of the [] operator should be implemented
+// 4. index for assign [] can't be bigger than size.
+//
 #ifndef TContainer_t_H_ 
 #define TContainer_t_H_
 
@@ -30,11 +40,8 @@ public:
 
 	//Operator Implementations
 	tContainer_t<T,C>& operator=(const tContainer_t<T,C>& tC);		//Assignment Operator
-	
-    //TODO: Assign & Get operator!
-    T*& operator[](unsigned index);									//[] operator
-    
-	void operator+=(tContainer_t<T,C>& tC);								//merge of 2 containers: arr1 += arr2, after the merge  
+	T*& operator[](unsigned index);									//[] Assign operator
+    void operator+=(tContainer_t<T,C>& tC);							//merge of 2 containers: arr1 += arr2, after the merge  
 																	//arr1 will contain arr1 & arr2 content and arr2 will be empty
 
     template<class T, class C>
@@ -58,18 +65,13 @@ private:
 
 	//Private Member
 	C container;
-    //iter_t it;
-
-	//private Methods
-	T* findFirst(const T& element );									//return iterator of the first equivalent element otherwise return container.end()
 
 };
 
 
-
-/*
- * Equal predicate for find_if() STL function.
- */
+/*********************************************
+ * Equal predicate for find_if() STL function*
+ *********************************************/
 
 template<class T>
 class tContainer_equal_t{
@@ -81,7 +83,6 @@ public:
     bool operator()(const T* obj) const{
         return _obj == *obj;
     }
-
 
 private:
     const T& _obj;
@@ -98,8 +99,7 @@ tContainer_t<T, C>::tContainer_t(){}
 template <class T, class C>
 tContainer_t<T, C>::tContainer_t( tContainer_t<T,C>& tC )
 {
-	   
-    container.insert(container.begin(), tC.container.begin(), tC.container.end());    
+	container.insert(container.begin(), tC.container.begin(), tC.container.end());    
 }
 
 template <class T, class C>
@@ -121,7 +121,7 @@ tContainer_t<T,C>& tContainer_t<T, C>::operator=( const tContainer_t<T,C>& tC )
 	return *this;
 }
 
-//Assign
+//Note: Assign functionality implementation only
 template <class T, class C>
 T*& tContainer_t<T, C>::operator[]( unsigned index )
 {
@@ -139,8 +139,6 @@ T*& tContainer_t<T, C>::operator[]( unsigned index )
     return *it;
           
 }
-
- 
 
 template <class T, class C>
 void tContainer_t<T, C>::operator+=( tContainer_t<T,C>& tC )
@@ -199,13 +197,13 @@ T* tContainer_t<T, C>::GetLastElement() const
 template <class T, class C>
 T* tContainer_t<T, C>::FindElement(const T& element )
 {
-	return findFirst(element);	
+	iter_t it = find_if(container.begin(), container.end(), tContainer_equal_t<T>( element ) );
 
-   /* if (it != container.end()){
-        return *it;
-    }*/
+	if (it == container.end()){
+		return 0;
+	}
 
-    //return 0;
+	return *it; 
 }
 
 template <class T, class C>
@@ -230,23 +228,5 @@ void tContainer_t<T, C>::RemoveAll()
 {
 	container.clear();
 }
-
-/**********************************
- * Private Methods implementation *
- **********************************/
-
-template <class T, class C>
-T* tContainer_t<T, C>::findFirst(const T& element )
-{
-    iter_t it = find_if(container.begin(), container.end(), tContainer_equal_t<T>( element ) );
-
-    if (it == container.end()){
-        return 0;
-    }
-
-    return *it; 
-    
-}
-
 
 #endif
